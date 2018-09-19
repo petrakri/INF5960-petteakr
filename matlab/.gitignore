@@ -1,0 +1,9 @@
+#Ignore these files
+*.mat
+*.fig
+*~
+
+#But make exceptions on these files
+!calibratedValues.mat
+!skiFlexGui.fig
+!skiForceGui.fig
