@@ -1,1 +1,0 @@
-Kobling15 må sjekkes
