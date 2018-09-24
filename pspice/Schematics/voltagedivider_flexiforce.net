@@ -1,0 +1,8 @@
+* Schematics Netlist *
+
+
+
+V_V1         $N_0001 0 5V
+R_R2         0 Vout  1k  
+RT_R5         Vout $N_0001 {(1K*(1-0.5))+.001}
+RB_R5        $N_0001 $N_0001 {(1K*0.5)+.001}

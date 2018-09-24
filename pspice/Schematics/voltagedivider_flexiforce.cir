@@ -1,0 +1,23 @@
+* C:\Users\Petter\Documents\voltagedivider_flexiforce.sch
+
+* Schematics Version 9.1 - Web Update 1
+* Fri Sep 21 15:14:12 2018
+
+
+
+** Analysis setup **
+.tran 1us 100ms
+.OP 
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "voltagedivider_flexiforce.net"
+.INC "voltagedivider_flexiforce.als"
+
+
+.probe
+
+
+.END

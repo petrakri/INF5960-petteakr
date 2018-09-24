@@ -1,0 +1,22 @@
+* C:\Users\Petter\Documents\noninvertin_opamp.sch
+
+* Schematics Version 9.1 - Web Update 1
+* Fri Sep 21 16:20:25 2018
+
+
+
+** Analysis setup **
+.OP 
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "noninvertin_opamp.net"
+.INC "noninvertin_opamp.als"
+
+
+.probe
+
+
+.END

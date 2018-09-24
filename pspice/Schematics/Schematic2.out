@@ -1,0 +1,106 @@
+
+**** 09/21/18 15:41:02 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\Schematic2.sch
+
+
+ ****     CIRCUIT DESCRIPTION
+
+
+******************************************************************************
+
+
+
+
+* Schematics Version 9.1 - Web Update 1
+* Fri Sep 21 15:41:01 2018
+
+
+
+** Analysis setup **
+.OP 
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "Schematic2.net"
+
+**** INCLUDING Schematic2.net ****
+* Schematics Netlist *
+
+
+
+V_V1         $N_0001 0 10V
+R_R2         $N_0002 0  4  
+R_R3         $N_0002 0  5  
+R_R1         $N_0001 $N_0002  10  
+
+**** RESUMING Schematic2.cir ****
+.INC "Schematic2.als"
+
+
+
+**** INCLUDING Schematic2.als ****
+* Schematics Aliases *
+
+.ALIASES
+V_V1            V1(+=$N_0001 -=0 )
+R_R2            R2(1=$N_0002 2=0 )
+R_R3            R3(1=$N_0002 2=0 )
+R_R1            R1(1=$N_0001 2=$N_0002 )
+.ENDALIASES
+
+
+**** RESUMING Schematic2.cir ****
+.probe
+
+
+.END
+
+**** 09/21/18 15:41:02 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\Schematic2.sch
+
+
+ ****     SMALL SIGNAL BIAS SOLUTION       TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+ NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
+
+
+($N_0001)   10.0000                   ($N_0002)    1.8182                   
+
+
+
+
+    VOLTAGE SOURCE CURRENTS
+    NAME         CURRENT
+
+    V_V1        -8.182E-01
+
+    TOTAL POWER DISSIPATION   8.18E+00  WATTS
+
+
+**** 09/21/18 15:41:02 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\Schematic2.sch
+
+
+ ****     OPERATING POINT INFORMATION      TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+
+
+          JOB CONCLUDED
+
+          TOTAL JOB TIME             .02
+
