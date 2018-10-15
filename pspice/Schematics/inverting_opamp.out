@@ -1,0 +1,117 @@
+
+**** 09/26/18 19:23:03 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_opamp.sch
+
+
+ ****     CIRCUIT DESCRIPTION
+
+
+******************************************************************************
+
+
+
+
+* Schematics Version 9.1 - Web Update 1
+* Wed Sep 26 19:23:03 2018
+
+
+
+** Analysis setup **
+.OP 
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "inverting_opamp.net"
+
+**** INCLUDING inverting_opamp.net ****
+* Schematics Netlist *
+
+
+
+C_C1         $N_0001 Vout  47p  
+E_MCP6004         Vout 0 VALUE {LIMIT(V(0,$N_0001)*1E6,-3.3V,+3.3V)}
+V_Vref         $N_0002 0 0.5V
+R_Rfeedback         $N_0001 Vout  1M  
+R_Rflexiforce         $N_0001 $N_0002  0.2M  
+
+**** RESUMING inverting_opamp.cir ****
+.INC "inverting_opamp.als"
+
+
+
+**** INCLUDING inverting_opamp.als ****
+* Schematics Aliases *
+
+.ALIASES
+C_C1            C1(1=$N_0001 2=Vout )
+E_MCP6004          MCP6004(OUT=Vout +=0 -=$N_0001 )
+V_Vref          Vref(+=$N_0002 -=0 )
+R_Rfeedback          Rfeedback(1=$N_0001 2=Vout )
+R_Rflexiforce          Rflexiforce(1=$N_0001 2=$N_0002 )
+_    _(Vout=Vout)
+.ENDALIASES
+
+
+**** RESUMING inverting_opamp.cir ****
+.probe
+
+
+.END
+
+**** 09/26/18 19:23:03 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_opamp.sch
+
+
+ ****     SMALL SIGNAL BIAS SOLUTION       TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+ NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
+
+
+( Vout)   -2.5000  ($N_0001) 2.500E-06                   ($N_0002)     .5000    
+
+
+
+
+    VOLTAGE SOURCE CURRENTS
+    NAME         CURRENT
+
+    V_Vref      -2.500E+03
+
+    TOTAL POWER DISSIPATION   1.25E+03  WATTS
+
+
+**** 09/26/18 19:23:03 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_opamp.sch
+
+
+ ****     OPERATING POINT INFORMATION      TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+
+
+
+**** VOLTAGE-CONTROLLED VOLTAGE SOURCES
+
+
+NAME         E_MCP6004 
+V-SOURCE    -2.500E+00
+I-SOURCE     2.500E+03
+
+          JOB CONCLUDED
+
+          TOTAL JOB TIME             .02
+

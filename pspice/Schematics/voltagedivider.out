@@ -1,0 +1,105 @@
+
+**** 09/24/18 18:54:14 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\voltagedivider.sch
+
+
+ ****     CIRCUIT DESCRIPTION
+
+
+******************************************************************************
+
+
+
+
+* Schematics Version 9.1 - Web Update 1
+* Mon Sep 24 18:54:14 2018
+
+
+
+** Analysis setup **
+.OP 
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "voltagedivider.net"
+
+**** INCLUDING voltagedivider.net ****
+* Schematics Netlist *
+
+
+
+V_V1         $N_0001 0 3.3V
+R_Rflexiforce         $N_0001 Vout  0.5M  
+R_R1         0 Vout  1M  
+
+**** RESUMING voltagedivider.cir ****
+.INC "voltagedivider.als"
+
+
+
+**** INCLUDING voltagedivider.als ****
+* Schematics Aliases *
+
+.ALIASES
+V_V1            V1(+=$N_0001 -=0 )
+R_Rflexiforce          Rflexiforce(1=$N_0001 2=Vout )
+R_R1            R1(1=0 2=Vout )
+_    _(Vout=Vout)
+.ENDALIASES
+
+
+**** RESUMING voltagedivider.cir ****
+.probe
+
+
+.END
+
+**** 09/24/18 18:54:14 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\voltagedivider.sch
+
+
+ ****     SMALL SIGNAL BIAS SOLUTION       TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+ NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
+
+
+( Vout)    2.2000  ($N_0001)    3.3000                   
+
+
+
+
+    VOLTAGE SOURCE CURRENTS
+    NAME         CURRENT
+
+    V_V1        -2.200E+03
+
+    TOTAL POWER DISSIPATION   7.26E+03  WATTS
+
+
+**** 09/24/18 18:54:14 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\voltagedivider.sch
+
+
+ ****     OPERATING POINT INFORMATION      TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+
+
+          JOB CONCLUDED
+
+          TOTAL JOB TIME            0.00
+

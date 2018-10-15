@@ -1,0 +1,9 @@
+* Schematics Netlist *
+
+
+
+C_C1         $N_0001 Vout  47p  
+E_MCP6004         Vout 0 VALUE {LIMIT(V(0,$N_0001)*1E6,-3.3V,+3.3V)}
+V_Vref         $N_0002 0 0.5V
+R_Rfeedback         $N_0001 Vout  1M  
+R_Rflexiforce         $N_0001 $N_0002  0.2M  

@@ -1,0 +1,7 @@
+* Schematics Netlist *
+
+
+
+V_V1         $N_0001 0 3.3V
+R_Rflexiforce         $N_0001 Vout  0.5M  
+R_R1         0 Vout  1M  

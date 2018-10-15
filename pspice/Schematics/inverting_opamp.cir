@@ -1,0 +1,22 @@
+* C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_opamp.sch
+
+* Schematics Version 9.1 - Web Update 1
+* Wed Sep 26 19:23:03 2018
+
+
+
+** Analysis setup **
+.OP 
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "inverting_opamp.net"
+.INC "inverting_opamp.als"
+
+
+.probe
+
+
+.END

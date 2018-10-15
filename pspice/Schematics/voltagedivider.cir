@@ -1,0 +1,22 @@
+* C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\voltagedivider.sch
+
+* Schematics Version 9.1 - Web Update 1
+* Mon Sep 24 18:54:14 2018
+
+
+
+** Analysis setup **
+.OP 
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "voltagedivider.net"
+.INC "voltagedivider.als"
+
+
+.probe
+
+
+.END

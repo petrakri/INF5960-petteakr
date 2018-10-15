@@ -1,7 +1,7 @@
 
-**** 09/21/18 16:20:25 *********** Evaluation PSpice (Nov 1999) **************
+**** 10/12/18 15:06:52 *********** Evaluation PSpice (Nov 1999) **************
 
- * C:\Users\Petter\Documents\noninvertin_opamp.sch
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\noninvertin_opamp.sch
 
 
  ****     CIRCUIT DESCRIPTION
@@ -13,7 +13,7 @@
 
 
 * Schematics Version 9.1 - Web Update 1
-* Fri Sep 21 16:20:25 2018
+* Fri Oct 12 15:06:51 2018
 
 
 
@@ -31,13 +31,12 @@
 
 
 
-R_R2         0 $N_0001  1k  
-R_R1         $N_0001 $N_0002  1k  
-R_Rf         $N_0003 Vout  100k  
-C_C1         $N_0003 Vout  47p  
-E_U1         Vout 0 VALUE {LIMIT(V($N_0001,$N_0003)*1E6,-3.3V,+3.3V)}
-R_R4         0 $N_0003  0.5M  
-V_V1         $N_0002 0 5V
+V_V1         $N_0001 0 5V
+R_R2         0 $N_0002  0.5M  
+R_R1         $N_0002 $N_0001  4.5M  
+R_Rfeedback         $N_0003 Vout  1M  
+E_MCP6004         Vout 0 VALUE {LIMIT(V($N_0002,$N_0003)*1E6,-3.3V,+3.3V)}
+R_Rflexiforce         0 $N_0003  0.15M  
 
 **** RESUMING noninvertin_opamp.cir ****
 .INC "noninvertin_opamp.als"
@@ -48,13 +47,12 @@ V_V1         $N_0002 0 5V
 * Schematics Aliases *
 
 .ALIASES
-R_R2            R2(1=0 2=$N_0001 )
-R_R1            R1(1=$N_0001 2=$N_0002 )
-R_Rf            Rf(1=$N_0003 2=Vout )
-C_C1            C1(1=$N_0003 2=Vout )
-E_U1            U1(OUT=Vout +=$N_0001 -=$N_0003 )
-R_R4            R4(1=0 2=$N_0003 )
-V_V1            V1(+=$N_0002 -=0 )
+V_V1            V1(+=$N_0001 -=0 )
+R_R2            R2(1=0 2=$N_0002 )
+R_R1            R1(1=$N_0002 2=$N_0001 )
+R_Rfeedback          Rfeedback(1=$N_0003 2=Vout )
+E_MCP6004          MCP6004(OUT=Vout +=$N_0002 -=$N_0003 )
+R_Rflexiforce          Rflexiforce(1=0 2=$N_0003 )
 _    _(Vout=Vout)
 .ENDALIASES
 
@@ -65,9 +63,9 @@ _    _(Vout=Vout)
 
 .END
 
-**** 09/21/18 16:20:25 *********** Evaluation PSpice (Nov 1999) **************
+**** 10/12/18 15:06:52 *********** Evaluation PSpice (Nov 1999) **************
 
- * C:\Users\Petter\Documents\noninvertin_opamp.sch
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\noninvertin_opamp.sch
 
 
  ****     SMALL SIGNAL BIAS SOLUTION       TEMPERATURE =   27.000 DEG C
@@ -80,9 +78,9 @@ _    _(Vout=Vout)
  NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
 
 
-( Vout)    3.3000  ($N_0001)    2.5000                   ($N_0002)    5.0000    
+( Vout)    3.3000  ($N_0001)    5.0000                   ($N_0002)     .5000    
 
-($N_0003) 16.50E-09                   
+($N_0003)     .4304                   
 
 
 
@@ -90,14 +88,14 @@ _    _(Vout=Vout)
     VOLTAGE SOURCE CURRENTS
     NAME         CURRENT
 
-    V_V1        -2.500E-03
+    V_V1        -1.000E+03
 
-    TOTAL POWER DISSIPATION   1.25E-02  WATTS
+    TOTAL POWER DISSIPATION   5.00E+03  WATTS
 
 
-**** 09/21/18 16:20:25 *********** Evaluation PSpice (Nov 1999) **************
+**** 10/12/18 15:06:52 *********** Evaluation PSpice (Nov 1999) **************
 
- * C:\Users\Petter\Documents\noninvertin_opamp.sch
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\noninvertin_opamp.sch
 
 
  ****     OPERATING POINT INFORMATION      TEMPERATURE =   27.000 DEG C
@@ -113,11 +111,11 @@ _    _(Vout=Vout)
 **** VOLTAGE-CONTROLLED VOLTAGE SOURCES
 
 
-NAME         E_U1      
+NAME         E_MCP6004 
 V-SOURCE     3.300E+00
-I-SOURCE    -3.300E-05
+I-SOURCE    -2.870E+03
 
           JOB CONCLUDED
 
-          TOTAL JOB TIME             .02
+          TOTAL JOB TIME            0.00
 
