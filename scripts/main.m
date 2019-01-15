@@ -6,6 +6,8 @@
 %%% Args:                                                             %%%
 %%% arduinoLink       - Initiates the connection to Arduino UNO       %%%
 %%% readingPin        - Which pin to read from the arduino "Volts"    %%%
+%%%                                                                   %%%
+%%% When arduinoLink is ran, matlab initiates the link with arduino   %%%
 %%%-------------------------------------------------------------------%%%
 
 
