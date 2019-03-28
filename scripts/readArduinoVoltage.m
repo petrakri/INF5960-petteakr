@@ -10,5 +10,5 @@
 %%%-------------------------------------------------------------------%%%
 
 function Vout = readArduinoVoltage(arduinoConnection, analogPin)
-    Vout = readVoltage(arduinoConnection, analogPin);
+    Vout = readVoltage(arduinoConnection, analogPin, 'external');
 end

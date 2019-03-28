@@ -10,6 +10,22 @@
 %%% When arduinoLink is ran, matlab initiates the link with arduino   %%%
 %%%-------------------------------------------------------------------%%%
 
+close all; clear all; clc;
 
-arduinoLink = arduino('com3', 'uno');
+a = arduino();
+a.Aref = 3.88;
+
+%a = arduino('com3', 'uno','Libraries','Adafruit\MotorShieldV2');
+shield = addon(a,'Adafruit\MotorShieldV2');
+%import arduinoio.internal.MWProtocol.*
+%configurePin(a, 'Aref')
+%pinMode(a, 'AREF')
 readingPin = 'A0';
+
+
+weights = [5, 10, 15, 20, 25];
+samples = 1;
+%[mu, measuredValues] = datacollection(weights, samples, a, readingPin);
+
+
+%calibration = calibrateSensors()

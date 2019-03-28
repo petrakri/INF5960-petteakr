@@ -11,7 +11,7 @@
 %%%-------------------------------------------------------------------%%%
 
 function calibrateSensors(arduinoConnection, pin)
-    weights = [5, 10, 20, 30, 35, 40, 45];
+    weights = [0.1, 0.2, 0.5, 0.6, 0.7, 0.8, 1];
     measuredValue = zeros(size(weights));
     for n = 1:length(weights)
         s = strcat('Load next weight of : ', num2str(weights(n)), ' kilograms');
@@ -24,7 +24,7 @@ function calibrateSensors(arduinoConnection, pin)
         %pause(press a button)
         %Give message to user to load new weight and press button
         
-        disp('Calibrationvalue collected !')
+        disp('Calibrationvalue collected for sensor ', str(n))
     end
     
     %TODO: Do measuredValue steps for seweral sensors
