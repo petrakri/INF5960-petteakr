@@ -11,7 +11,7 @@
 %%% CalibrateSensors  - Creates transfer functions for each sensor    %%%
 %%% 
 %%%-------------------------------------------------------------------%%%
-
+clear all; clc;
 % Setting up arduino
 a = ArduinoSetup('com3','uno');
 
@@ -19,36 +19,50 @@ a = ArduinoSetup('com3','uno');
 weights = [0.5, 1.5, 2.5, 3.5, 4.5];
 samples = 100;
 
-%% Collect values
+%% Calibration of sensors
 
-figure(1);
-[io1, io2, io3] = MUXanalogread(a);
-io1_L = io1(1:2:end);
-io1_R = io1(2:2:end);
-io2_L = io2(1:2:end);
-io2_R = io2(2:2:end);
-io3_L = io3(1:2:end);
-io3_R = io3(2:2:end);
-profile = [io1_L, io2_L, io3_L; io1_R, io2_R, io3_R];
+%Find the lowest value from the profile. The loaded sensor
+
+
+%1. create analytical system respons to calculate resistance value
+Rflex = Rfb * (Vin - Vref) / (Vref - Vout);
+gain = (Rfb/Rflex);
+conductance = 1./Rflex;
+
+%2. Plot conductance values for increasing weight (prove linearity)
+
+%3. polyfit to create system response eq.
+
+%4. save equations for use with system
+%% Resistance to weight transfer function
+%1. create function to take current voltage value and return weight
+
+
+%% Create ski profile
+profile = createProfile(a);
 profile = padarray(profile,[3,3], 'both');
 h = surfl(profile);
-colormap(pink)
-shading interp
+%colormap(pink)
+%shading interp
+disp('Done')
 
-save('data/29mai')
-filename = 'data/29mai-3d-test';
+%% Saving the data
+save('data/31mai')
+filename = 'data/31mai-calibration-test';
 xlswrite(filename,profile);
+
 %% Test sampling over time
 for i=1:samples
-    v(i) = readArduinoVoltage(a, readingPin);
+    v(i) = a.readVoltage('A2');
+    v2(i) = a.readVoltage('A1');
 end
-plot(1:samples, v)
-min_v = min(v);
-max_v = max(v);
-diff_v = max_v - min_v;
+%plot(1:samples, v)
+%min_v = min(v);
+%max_v = max(v);
+%diff_v = max_v - min_v;
 %title('500g: V_{diff} = 0.0147V, V_{avg} = 3.4383V');
-xlabel('Samples');
-ylabel('Volt');
+%xlabel('Samples');
+%ylabel('Volt');
 %% Calibration sample each sensor ~10 times for accurate voltage read with mean
 
 calibrationValues = calibrateSensors(a, readingPin);
