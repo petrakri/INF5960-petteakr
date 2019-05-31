@@ -1,0 +1,24 @@
+* C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_finished.sch
+
+* Schematics Version 9.1 - Web Update 1
+* Wed Mar 06 08:53:33 2019
+
+
+
+** Analysis setup **
+.tran 1ns 1000ns
+.OP 
+.LIB "C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_finished.lib"
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "inverting_finished.net"
+.INC "inverting_finished.als"
+
+
+.probe
+
+
+.END

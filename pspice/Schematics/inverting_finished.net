@@ -1,0 +1,17 @@
+* Schematics Netlist *
+
+
+
+C_C2         0 Vout  100n  
+C_C1         $N_0001 $N_0002  47p  
+R_R6         $N_0002 Vout  1k  
+C_C3         0 $N_0003  10u  
+C_C4         0 $N_0003  100n  
+R_Rf         $N_0001 $N_0002  20k  
+R_R1         Vbias $N_0003  150  
+X_U4A         Vbias $N_0001 $N_0003 0 $N_0002 LM324
+R_R3         $N_0004 $N_0003  4k  
+R_R2         0 $N_0004  1k  
+V_VDC         $N_0003 0 5V
+D_D1         0 Vbias Dbreak 
+R_R9         $N_0004 $N_0001  14k  

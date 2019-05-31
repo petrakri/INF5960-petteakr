@@ -2,8 +2,10 @@
 
 
 
-C_C1         $N_0001 Vout  47p  
-E_MCP6004         Vout 0 VALUE {LIMIT(V(0,$N_0001)*1E6,-3.3V,+3.3V)}
-V_Vref         $N_0002 0 0.5V
-R_Rfeedback         $N_0001 Vout  1M  
-R_Rflexiforce         $N_0001 $N_0002  0.2M  
+C_C1         $N_0001 V_out  47p  
+E_U1         V_out 0 VALUE {LIMIT(V(GND,$N_0001)*1,-15V,+15V)}
+R_R_feedback         $N_0001 V_out  10k  
+R_R5         0 $N_0002  1k  
+R_R_flexiforce         $N_0001 $N_0002  600k  
+R_R4         $N_0002 $N_0003  4k  
+V_V3         $N_0003 GND -5V

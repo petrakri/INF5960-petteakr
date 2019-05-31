@@ -1,0 +1,326 @@
+
+**** 03/06/19 08:57:12 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_finished.sch
+
+
+ ****     CIRCUIT DESCRIPTION
+
+
+******************************************************************************
+
+
+
+
+* Schematics Version 9.1 - Web Update 1
+* Wed Mar 06 08:53:33 2019
+
+
+
+** Analysis setup **
+.tran 1ns 1000ns
+.OP 
+.LIB "C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_finished.lib"
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "inverting_finished.net"
+
+**** INCLUDING inverting_finished.net ****
+* Schematics Netlist *
+
+
+
+C_C2         0 Vout  100n  
+C_C1         $N_0001 $N_0002  47p  
+R_R6         $N_0002 Vout  1k  
+C_C3         0 $N_0003  10u  
+C_C4         0 $N_0003  100n  
+R_Rf         $N_0001 $N_0002  20k  
+R_R1         Vbias $N_0003  150  
+X_U4A         Vbias $N_0001 $N_0003 0 $N_0002 LM324
+R_R3         $N_0004 $N_0003  4k  
+R_R2         0 $N_0004  1k  
+V_VDC         $N_0003 0 5V
+D_D1         0 Vbias Dbreak 
+R_R9         $N_0004 $N_0001  14k  
+
+**** RESUMING inverting_finished.cir ****
+.INC "inverting_finished.als"
+
+
+
+**** INCLUDING inverting_finished.als ****
+* Schematics Aliases *
+
+.ALIASES
+C_C2            C2(1=0 2=Vout )
+C_C1            C1(1=$N_0001 2=$N_0002 )
+R_R6            R6(1=$N_0002 2=Vout )
+C_C3            C3(1=0 2=$N_0003 )
+C_C4            C4(1=0 2=$N_0003 )
+R_Rf            Rf(1=$N_0001 2=$N_0002 )
+R_R1            R1(1=Vbias 2=$N_0003 )
+X_U4A           U4A(+=Vbias -=$N_0001 V+=$N_0003 V-=0 OUT=$N_0002 )
+R_R3            R3(1=$N_0004 2=$N_0003 )
+R_R2            R2(1=0 2=$N_0004 )
+V_VDC           VDC(+=$N_0003 -=0 )
+D_D1            D1(1=0 2=Vbias )
+R_R9            R9(1=$N_0004 2=$N_0001 )
+_    _(Vout=Vout)
+_    _(Vbias=Vbias)
+.ENDALIASES
+
+
+**** RESUMING inverting_finished.cir ****
+.probe
+
+
+.END
+
+**** 03/06/19 08:57:12 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_finished.sch
+
+
+ ****     Diode MODEL PARAMETERS
+
+
+******************************************************************************
+
+
+
+
+               Dbreak          X_U4A.dx        
+          IS   10.000000E-15  800.000000E-18 
+         ISR  100.000000E-12                 
+          BV    4.7                          
+         IBV    2.000000E-03                 
+          RS     .1             1            
+          TT    5.000000E-09                 
+         CJO  100.000000E-15                 
+          VJ     .75                         
+           M     .3333                       
+
+
+**** 03/06/19 08:57:12 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_finished.sch
+
+
+ ****     BJT MODEL PARAMETERS
+
+
+******************************************************************************
+
+
+
+
+               X_U4A.qx        
+               PNP             
+          IS  800.000000E-18 
+          BF  166.7          
+          NF    1            
+          BR    1            
+          NR    1            
+          CN    2.2          
+           D     .52         
+
+
+**** 03/06/19 08:57:12 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_finished.sch
+
+
+ ****     SMALL SIGNAL BIAS SOLUTION       TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+ NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
+
+
+( Vout)    4.1132  (Vbias)    4.7002  ($N_0001)    2.3248                       
+
+($N_0002)    4.1132                   ($N_0003)    5.0000                       
+
+($N_0004)    1.0716                   (X_U4A.6)   -1.4937                       
+
+(X_U4A.7)    4.1185                   (X_U4A.8)    4.1185                       
+
+(X_U4A.9)    0.0000                   (X_U4A.10)    2.9643                      
+
+(X_U4A.11)     .0794                  (X_U4A.12) 40.66E-09                      
+
+(X_U4A.13)    2.9365                  (X_U4A.14)    2.9643                      
+
+(X_U4A.53)    3.5000                  (X_U4A.54)     .6500                      
+
+(X_U4A.90)     .1053                  (X_U4A.91)   40.0000                      
+
+(X_U4A.92)  -40.0000                  (X_U4A.99)    2.5000                  
+
+
+
+
+    VOLTAGE SOURCE CURRENTS
+    NAME         CURRENT
+
+    V_VDC       -3.531E-03
+    X_U4A.vb    -1.494E-05
+    X_U4A.vc    -1.585E-05
+    X_U4A.ve     3.464E-12
+    X_U4A.vlim   1.053E-04
+    X_U4A.vlp   -3.990E-11
+    X_U4A.vln   -4.011E-11
+
+    TOTAL POWER DISSIPATION   1.77E-02  WATTS
+
+
+**** 03/06/19 08:57:12 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_finished.sch
+
+
+ ****     OPERATING POINT INFORMATION      TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+
+
+
+**** VOLTAGE-CONTROLLED CURRENT SOURCES
+
+
+NAME         X_U4A.ga    X_U4A.gcm 
+I-SOURCE     1.497E-05   2.768E-08
+
+
+**** VOLTAGE-CONTROLLED VOLTAGE SOURCES
+
+
+NAME         X_U4A.egnd
+V-SOURCE     2.500E+00
+I-SOURCE    -1.052E-04
+
+
+**** CURRENT-CONTROLLED CURRENT SOURCES
+
+
+NAME         X_U4A.fb  
+I-SOURCE    -6.647E-02
+
+
+**** CURRENT-CONTROLLED VOLTAGE SOURCES
+
+
+NAME         X_U4A.hlim
+V-SOURCE     1.053E-01
+I-SOURCE    -2.106E-13
+
+
+**** DIODES
+
+
+NAME         D_D1        X_U4A.dc    X_U4A.de    X_U4A.dlp   X_U4A.dln 
+MODEL        Dbreak      X_U4A.dx    X_U4A.dx    X_U4A.dx    X_U4A.dx  
+ID          -2.00E-03    1.58E-05   -3.46E-12   -3.99E-11   -4.01E-11 
+VD          -4.70E+00    6.13E-01   -3.46E+00   -3.99E+01   -4.01E+01 
+REQ          1.29E+01    1.63E+03    1.00E+12    1.00E+12    1.00E+12 
+CAP          3.86E-10    0.00E+00    0.00E+00    0.00E+00    0.00E+00 
+
+NAME         X_U4A.dp  
+MODEL        X_U4A.dx  
+ID          -5.00E-12 
+VD          -5.00E+00 
+REQ          1.00E+12 
+CAP          0.00E+00 
+
+
+**** BIPOLAR JUNCTION TRANSISTORS
+
+
+NAME         X_U4A.q1    X_U4A.q2  
+MODEL        X_U4A.qx    X_U4A.qx  
+IB          -8.98E-08    4.71E-12 
+IC          -1.50E-05   -7.67E-12 
+VBE         -6.12E-01    1.74E+00 
+VBC          2.25E+00    4.70E+00 
+VCE         -2.86E+00   -2.96E+00 
+BETADC       1.67E+02   -1.63E+00 
+GM           5.79E-04    0.00E+00 
+RPI          2.88E+05    1.67E+14 
+RX           0.00E+00    0.00E+00 
+RO           1.00E+12    1.00E+12 
+CBE          0.00E+00    0.00E+00 
+CBC          0.00E+00    0.00E+00 
+CJS          0.00E+00    0.00E+00 
+BETAAC       1.67E+02    0.00E+00 
+CBX/CBX2     0.00E+00    0.00E+00 
+FT/FT2       9.21E+15    0.00E+00 
+
+
+**** 03/06/19 08:57:12 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_finished.sch
+
+
+ ****     INITIAL TRANSIENT SOLUTION       TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+ NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
+
+
+( Vout)    4.1132  (Vbias)    4.7002  ($N_0001)    2.3248                       
+
+($N_0002)    4.1132                   ($N_0003)    5.0000                       
+
+($N_0004)    1.0716                   (X_U4A.6)   -1.4937                       
+
+(X_U4A.7)    4.1185                   (X_U4A.8)    4.1185                       
+
+(X_U4A.9)    0.0000                   (X_U4A.10)    2.9643                      
+
+(X_U4A.11)     .0794                  (X_U4A.12) 40.66E-09                      
+
+(X_U4A.13)    2.9365                  (X_U4A.14)    2.9643                      
+
+(X_U4A.53)    3.5000                  (X_U4A.54)     .6500                      
+
+(X_U4A.90)     .1053                  (X_U4A.91)   40.0000                      
+
+(X_U4A.92)  -40.0000                  (X_U4A.99)    2.5000                  
+
+
+
+
+    VOLTAGE SOURCE CURRENTS
+    NAME         CURRENT
+
+    V_VDC       -3.531E-03
+    X_U4A.vb    -1.494E-05
+    X_U4A.vc    -1.585E-05
+    X_U4A.ve     3.464E-12
+    X_U4A.vlim   1.053E-04
+    X_U4A.vlp   -3.990E-11
+    X_U4A.vln   -4.011E-11
+
+    TOTAL POWER DISSIPATION   1.77E-02  WATTS
+
+
+
+          JOB CONCLUDED
+
+          TOTAL JOB TIME             .02
+

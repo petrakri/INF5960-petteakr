@@ -11,29 +11,32 @@
 %%% CalibrateSensors  - Creates transfer functions for each sensor    %%%
 %%% 
 %%%-------------------------------------------------------------------%%%
-clear all; clc;
+clear; clc;
 % Setting up arduino
+%%
 a = ArduinoSetup('com3','uno');
-
+%load calibrationvalues-31.05.mat
 % Initiate variables
-weights = [0.5, 1.5, 2.5, 3.5, 4.5];
-samples = 100;
+dispweights = [0, 0.5, 5, 5.5, 10];
+%%
+weights = [872, 1100, 3152.34, 3380.37, 5432.67];
 
 %% Calibration of sensors
 
-%Find the lowest value from the profile. The loaded sensor
 
-
-%1. create analytical system respons to calculate resistance value
-Rflex = Rfb * (Vin - Vref) / (Vref - Vout);
-gain = (Rfb/Rflex);
-conductance = 1./Rflex;
-
+[r, sysfunc] = createSysFunc(a, dispweights);
+%%
+conductance = 1./r;
 %2. Plot conductance values for increasing weight (prove linearity)
-
-%3. polyfit to create system response eq.
-
-%4. save equations for use with system
+plot(weights./1e3, conductance);
+%%
+%3. create the function to show weight
+profile = createProfile(a);
+f = @calculateResistance;
+resprofile = arrayfun(f,profile);
+%%
+kilo = (1./resprofile(1,1))*sysfunc(1) + sysfunc(2)
+disp('Done')
 %% Resistance to weight transfer function
 %1. create function to take current voltage value and return weight
 

@@ -1,5 +1,5 @@
 
-**** 09/26/18 19:23:03 *********** Evaluation PSpice (Nov 1999) **************
+**** 03/05/19 16:02:20 *********** Evaluation PSpice (Nov 1999) **************
 
  * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_opamp.sch
 
@@ -13,7 +13,7 @@
 
 
 * Schematics Version 9.1 - Web Update 1
-* Wed Sep 26 19:23:03 2018
+* Tue Mar 05 16:02:20 2019
 
 
 
@@ -31,11 +31,13 @@
 
 
 
-C_C1         $N_0001 Vout  47p  
-E_MCP6004         Vout 0 VALUE {LIMIT(V(0,$N_0001)*1E6,-3.3V,+3.3V)}
-V_Vref         $N_0002 0 0.5V
-R_Rfeedback         $N_0001 Vout  1M  
-R_Rflexiforce         $N_0001 $N_0002  0.2M  
+C_C1         $N_0001 V_out  47p  
+E_U1         V_out 0 VALUE {LIMIT(V(GND,$N_0001)*1,-15V,+15V)}
+R_R_feedback         $N_0001 V_out  10k  
+R_R5         0 $N_0002  1k  
+R_R_flexiforce         $N_0001 $N_0002  600k  
+R_R4         $N_0002 $N_0003  4k  
+V_V3         $N_0003 GND -5V
 
 **** RESUMING inverting_opamp.cir ****
 .INC "inverting_opamp.als"
@@ -46,12 +48,15 @@ R_Rflexiforce         $N_0001 $N_0002  0.2M
 * Schematics Aliases *
 
 .ALIASES
-C_C1            C1(1=$N_0001 2=Vout )
-E_MCP6004          MCP6004(OUT=Vout +=0 -=$N_0001 )
-V_Vref          Vref(+=$N_0002 -=0 )
-R_Rfeedback          Rfeedback(1=$N_0001 2=Vout )
-R_Rflexiforce          Rflexiforce(1=$N_0001 2=$N_0002 )
-_    _(Vout=Vout)
+C_C1            C1(1=$N_0001 2=V_out )
+E_U1            U1(OUT=V_out +=GND -=$N_0001 )
+R_R_feedback          R_feedback(1=$N_0001 2=V_out )
+R_R5            R5(1=0 2=$N_0002 )
+R_R_flexiforce          R_flexiforce(1=$N_0001 2=$N_0002 )
+R_R4            R4(1=$N_0002 2=$N_0003 )
+V_V3            V3(+=$N_0003 -=GND )
+_    _(V_out=V_out)
+_    _(GND=GND)
 .ENDALIASES
 
 
@@ -61,7 +66,7 @@ _    _(Vout=Vout)
 
 .END
 
-**** 09/26/18 19:23:03 *********** Evaluation PSpice (Nov 1999) **************
+**** 03/05/19 16:02:20 *********** Evaluation PSpice (Nov 1999) **************
 
  * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_opamp.sch
 
@@ -76,7 +81,9 @@ _    _(Vout=Vout)
  NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
 
 
-( Vout)   -2.5000  ($N_0001) 2.500E-06                   ($N_0002)     .5000    
+(  GND)    5.0041  (V_out)    2.5227  ($N_0001)    2.4814                       
+
+($N_0002)     .0041                   ($N_0003)     .0041                   
 
 
 
@@ -84,12 +91,12 @@ _    _(Vout=Vout)
     VOLTAGE SOURCE CURRENTS
     NAME         CURRENT
 
-    V_Vref      -2.500E+03
+    V_V3         0.000E+00
 
-    TOTAL POWER DISSIPATION   1.25E+03  WATTS
+    TOTAL POWER DISSIPATION   0.00E+00  WATTS
 
 
-**** 09/26/18 19:23:03 *********** Evaluation PSpice (Nov 1999) **************
+**** 03/05/19 16:02:20 *********** Evaluation PSpice (Nov 1999) **************
 
  * C:\Users\Petter\Documents\prog\github\INF5960-petteakr\pspice\Schematics\inverting_opamp.sch
 
@@ -107,11 +114,11 @@ _    _(Vout=Vout)
 **** VOLTAGE-CONTROLLED VOLTAGE SOURCES
 
 
-NAME         E_MCP6004 
-V-SOURCE    -2.500E+00
-I-SOURCE     2.500E+03
+NAME         E_U1      
+V-SOURCE     2.523E+00
+I-SOURCE    -4.129E-06
 
           JOB CONCLUDED
 
-          TOTAL JOB TIME             .02
+          TOTAL JOB TIME            0.00
 
