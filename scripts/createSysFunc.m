@@ -1,13 +1,10 @@
-function [r, trafunc] = createSysFunc(a, weights)
+function [r, sysfunc] = createSysFunc(a, weights, channel, sensor)
     % Scripts for creating transfer function for a specific sensor
     % with given weights and resistance values
     r = zeros(1,length(weights));
-    Vout = zeros(1,4);
+    Vout = zeros(1,3);
     % For each weights, read voltage, calculate resistance value
     for i = 1:length(r)
-        clc;
-        disp('Calibration program started')
-        disp('__________________________________________')
         s = strcat('Load weight of: ', num2str(weights(i)), 'grams and press a key');
         disp(s)
         % wait for user input
@@ -16,12 +13,11 @@ function [r, trafunc] = createSysFunc(a, weights)
             profile = createProfile(a);
             % Find the lowest value from the profile. The loaded sensor
             %Vout = min(min(profile(1,1:8),profile(2,1:8)));
-            Vout(j) = profile(1,2);
+            Vout(j) = profile(channel, sensor);
         end
         % Calculate the resistance value for given voltage
         r(i) = calculateResistance(mean(Vout));
     end
     % Create the equation with polyfit
-    p = polyfit(weights, 1./r, 1);
-    trafunc = p;
+    sysfunc = polyfit(weights, 1./r, 1);
 end
