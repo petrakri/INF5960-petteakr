@@ -31,7 +31,7 @@ r_all = cell(2,24);
 %%
 for i = 1:2
     % Calibration for channel number i
-    for j = 15:24
+    for j = 23:24
         % Calibrate sensor number j
         clc;
         a = 'Calibration of';
