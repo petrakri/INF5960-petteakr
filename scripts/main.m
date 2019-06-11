@@ -31,7 +31,7 @@ r_all = cell(2,24);
 %%
 for i = 1:2
     % Calibration for channel number i
-    for j = 1:12
+    for j = 15:24
         % Calibrate sensor number j
         clc;
         a = 'Calibration of';
@@ -41,8 +41,8 @@ for i = 1:2
         disp(s)
         disp('___________________________________')
         [r, sysfunc] = createSysFunc(arduino, weights2, i, j);
-        sysfunc_all(i,j) = sysfunc;
-        r_all(i,j) = r;
+        sysfunc_all{i,j} = sysfunc;
+        r_all{i,j} = r;
     end
 end
 %% 3D-plots
