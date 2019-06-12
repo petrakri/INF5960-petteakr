@@ -14,7 +14,7 @@
 %% Setting up the arduino
 arduino = ArduinoSetup('com3','uno');
 %% Load workspace variables
-load('data/06.06_calibration_workspace.mat')
+load('11.06_calibration_workspace.mat')
 %% Set up the weights for calibration
 weight = @(gram) 0.5072*gram + 900;
 weights2 = [700, 100 + weight(0), 500 + weight(200), 900 + weight(0),...
@@ -45,13 +45,92 @@ for i = 1:2
         r_all{i,j} = r;
     end
 end
+%% Average sysfunc per circuit
+circuits = cell(1,length(r_all)/2);
+for x = 2:2:length(r_all)
+    clear r_cat;
+    clear r_avg;
+    clear p_avg;
+    r_cat = cat(3,r_all{1,(x-1)}, r_all{1,x});
+    r_avg = mean(r_cat,3);
+    p_avg = polyfit(weights2,1./r_avg,1);
+    circuits{1,x/2} = p_avg;
+end
+disp('DONE')
+%% Sensor locations for plotting
+hull_pitch = 25;
+x = 18;
+full_array_distance = [0:62]*hull_pitch;
+I_array = logical([1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 ...
+    0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1]);
+x_axis_sensor_location = full_array_distance(I_array);
 %% 3D-plots
 calcR = @calculateResistance;
-v = createProfile(arduino);
-r = arrayfun(calcR,v);
-w = (1./r - p2_avg(2))./p2_avg(1);
-w(w<0.01) = 0;
-w_prof = [zeros(2,3),w(:,1:12),zeros(2,19),w(:,12:end),zeros(2,3)];
+counter = 0;
+%while 1
+
+%r(r<0) = 0;
+%w_profile = zeros(2,24);
+% r(1,1) r(1,2) r(2,1) r(2,2) = circuit{1,1}
+% r(1,3) r(1,4) r(2,3) r(2,4) = circuit{1,2}
+% r(1,5) r(1,6) r(2,5) r(2,6) = circuit{1,3}
+
+w_left = zeros(5,12);
+w_right = zeros(5,12);
+for samples = 1:5
+    v = createProfile(arduino);
+    r = arrayfun(calcR,v);
+    sensor_idx = 1;
+    for i = 1:length(sysfunc_all)
+        for j = 1:1
+            w_left(samples,sensor_idx) = (1./r(1, sensor_idx) - sysfunc_all{1,i}(2))./sysfunc_all{1,i}(1) ;
+            %w_right(samples,sensor_idx) = (1./r(2, sensor_idx) - circuits{1,i}(2))./circuits{1,i}(1) ;
+            sensor_idx = sensor_idx + 1;
+        end
+    end
+end
+w_left_avg = mean(w_left, 1);
+%w_right_avg = mean(w_right, 1);
+w_left(w_left<0) = 0;
+%w_right(w_right<0) = 0;
+%w_profile = [w_right;w_left];
+disp('DONE')
+% 2D-plots
+figure(4);
+clf;
+subplot(2,2,1);
+hold all;
+title('Left channel');
+ylabel('Weight [g]');
+xlabel('Sensor location [mm]');
+plot(x_axis_sensor_location, w_left_avg, 'b'); 
+plot(x_axis_sensor_location, w_left_avg, 'or'); 
+ylim([-3000,7000])
+
+subplot(2,2,2);
+%title('Right channel');
+%ylabel('Weight [g]');
+%xlabel('Sensor location [mm]');
+%hold all;
+%plot(x_axis_sensor_location, w_right_avg, 'b'); 
+%plot(x_axis_sensor_location, w_right_avg, 'or');
+%ylim([-3000,7000])
+
+subplot(2,2,[3 4]);
+title('Both channels');
+ylabel('Weight [g]');
+xlabel('Sensor location [mm]');
+hold all;
+plot(x_axis_sensor_location, w_left_avg, 'b');
+plot(x_axis_sensor_location, w_left_avg, 'ob');
+%plot(x_axis_sensor_location, w_right_avg, 'r');
+%plot(x_axis_sensor_location, w_right_avg, 'or');
+ylim([-3000,7000])
+drawnow;
+%end
+%%
+%w(w<0.01) = 0;
+%w_prof = [zeros(2,3),w(:,1:12),zeros(2,19),w(:,12:end),zeros(2,3)];
 
 figure(1);
 X = 1:length(w_prof);
