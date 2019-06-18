@@ -1,4 +1,4 @@
-function [r, sysfunc] = createSysFunc(a, weights, channel, sensor)
+function [r, sysfunc] = createSysFunc(a, weights, Vref, channel, sensor)
     % Scripts for creating transfer function for a specific sensor
     % with given weights and resistance values
     r = zeros(1,length(weights));
@@ -16,7 +16,7 @@ function [r, sysfunc] = createSysFunc(a, weights, channel, sensor)
             Vout(j) = profile(channel, sensor);
         end
         % Calculate the resistance value for given voltage
-        r(i) = calculateResistance(mean(Vout));
+        r(i) = calculateResistance(mean(Vout), Vref(channel, sensor));
     end
     % Create the equation with polyfit
     sysfunc = polyfit(weights, 1./r, 1);
