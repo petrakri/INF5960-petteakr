@@ -25,9 +25,10 @@ title('Weight intervals for calibration')
 xlabel('Interval #');
 ylabel('Weight [g]');
 % Vref = [circuit1, circuit2, ... , circuit12];
-Vref = [ones(2,2)*3.88, ones(2,2)*3.99, ones(2,2)*4.0, ones(2,2)*3.98, ...
-    ones(2,2)*3.87, ones(2,2)*3.99,ones(2,2)*3.88, ones(2,2)*3.99, ...
-    ones(2,2)*4.0, ones(2,2)*3.98, ones(2,2)*3.87, ones(2,2)*3.99,];
+Vref = [ones(2,2)*3.847, ones(2,2)*3.837, ones(2,2)*3.864, ones(2,2)*3.857, ...
+    ones(2,2)*3.856, ones(2,2)*3.849, ones(2,2)*3.88, ones(2,2)*3.831, ...
+    ones(2,2)*3.86, ones(2,2)*3.856, ones(2,2)*3.876, ones(2,2)*3.841];
+Vref_actual = createProfile(arduino);
 % Sensor locations for plotting
 hull_pitch = 25;
 x = 18;
@@ -35,6 +36,7 @@ full_array_distance = [0:62]*hull_pitch;
 I_array = logical([1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 ...
     0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1]);
 x_axis_sensor_location = full_array_distance(I_array);
+%%
 sysfunc_all = cell(2,24);
 r_all = cell(2,24);
 %% Calibration of all 48 sensors (For best accuracy)
@@ -69,28 +71,18 @@ for x = 2:2:length(r_all)
 end
 disp('Circuit average system functions calculated');
 %% 3D-plots
-calcR = @calculateResistance;
-counter = 0;
-%while 1
-
-%r(r<0) = 0;
-%w_profile = zeros(2,24);
 % r(1,1) r(1,2) r(2,1) r(2,2) = circuit{1,1}
 % r(1,3) r(1,4) r(2,3) r(2,4) = circuit{1,2}
 % r(1,5) r(1,6) r(2,5) r(2,6) = circuit{1,3}
 
-w_left = zeros(5,12);
-w_right = zeros(5,12);
+w_left = zeros(5,24);
+w_right = zeros(5,24);
 for samples = 1:5
     v = createProfile(arduino);
-    r = arrayfun(calcR, v, Vref);
-    sensor_idx = 1;
+    r = arrayfun(@calculateResistance, v, Vref_actual);
     for i = 1:length(sysfunc_all)
-        for j = 1:1
-            w_left(samples,sensor_idx) = (1./r(1, sensor_idx) - sysfunc_all{1,i}(2))./sysfunc_all{1,i}(1) ;
-            w_right(samples,sensor_idx) = (1./r(2, sensor_idx) - circuits{1,i}(2))./circuits{1,i}(1) ;
-            sensor_idx = sensor_idx + 1;
-        end
+        w_left(samples,i) = (1./r(1, i) - sysfunc_all{1,i}(2))./sysfunc_all{1,i}(1) ;
+        %w_right(samples,i) = (1./r(2, i) - sysfunc_all{2,i}(2))./sysfunc_all{2,i}(1) ;
     end
 end
 w_left_avg = mean(w_left, 1);
