@@ -1,20 +1,22 @@
-%%%-------------------------------------------------------------------%%%
-%%% main.m                                                            %%%
-%%% Version 1.3   10.06.2019                                          %%%
-%%% @Petter André Kristiansen                                         %%%
-%%% Main function for operating the measurement process               %%%
-%%% Args:                                                             %%%
-%%%                                                                   %%%
-%%% Functions:
-%%% ArduinoSetup      - Establishes arduino connection and MUX setup  %%%
-%%% MUXanalogRead     - Collects input values from MUX shield II      %%%
-%%% CalibrateSensors  - Creates transfer functions for each sensor    %%%
-%%% 
-%%%-------------------------------------------------------------------%%%
+%%%---------------------------------------------------------------------%%%
+%%% main.m                                                              %%%
+%%% Version 1.4   19.06.2019                                            %%%
+%%% @Petter André Kristiansen                                           %%%
+%%% Main function for operating the measurement process                 %%%
+%%% Args:                                                               %%%
+%%%                                                                     %%%
+%%% Functions:                                                          %%%
+%%% ArduinoSetup        - Establishes arduino connection and MUX setup  %%%
+%%% MUXanalogRead       - Collects input values from MUX shield II      %%%
+%%% createSysFunc       - Creates transfer functions for each sensor    %%%
+%%% createProfile       - Creates the voltage profile from all sensors  %%%
+%%% calculateResistance - Calculates the resistance value of each sensor%%%
+%%%                       for each given voltage from "createProfile"   %%%
+%%%---------------------------------------------------------------------%%%
 %% Setting up the arduino
 arduino = ArduinoSetup('com3','uno');
 %% Load workspace variables
-load('11.06_calibration_workspace.mat')
+load('data/20.06_calibration_workspace.mat')
 %% Initialize variables
 weight = @(gram) 0.5072*gram + 900;
 weights2 = [700, 100 + weight(0), 500 + weight(200), 900 + weight(0),...
@@ -31,20 +33,16 @@ Vref = [ones(2,2)*3.847, ones(2,2)*3.837, ones(2,2)*3.864, ones(2,2)*3.857, ...
 Vref_actual = createProfile(arduino);
 % Sensor locations for plotting
 hull_pitch = 25;
-x = 18;
 full_array_distance = [0:62]*hull_pitch;
 I_array = logical([1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 ...
     0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1]);
 x_axis_sensor_location = full_array_distance(I_array);
-%%
-sysfunc_all = cell(2,24);
-r_all = cell(2,24);
 %% Calibration of all 48 sensors (For best accuracy)
 % Channel 1 is left side, channel 2 is right side
 % i = channel y-axis, j = sensor x-axis 
-for i = 1:2
+for i = 1:1
     % Calibration for channel number i
-    for j = 23:24
+    for j = 1:1
         % Calibrate sensor number j
         clc;
         a = 'Calibration of';
@@ -53,7 +51,7 @@ for i = 1:2
         s = [a,b,c];
         disp(s)
         disp('___________________________________')
-        [r, sysfunc] = createSysFunc(arduino, weights2, Vref, i, j);
+        [r, sysfunc] = createSysFunc(arduino, weights2, Vref_actual, i, j);
         sysfunc_all{i,j} = sysfunc;
         r_all{i,j} = r;
     end
@@ -74,21 +72,24 @@ disp('Circuit average system functions calculated');
 % r(1,1) r(1,2) r(2,1) r(2,2) = circuit{1,1}
 % r(1,3) r(1,4) r(2,3) r(2,4) = circuit{1,2}
 % r(1,5) r(1,6) r(2,5) r(2,6) = circuit{1,3}
-
-w_left = zeros(5,24);
-w_right = zeros(5,24);
-for samples = 1:5
+while 1
+N = 2;
+w_left = zeros(N,24);
+w_right = zeros(N,24);
+for sample = 1:N
     v = createProfile(arduino);
     r = arrayfun(@calculateResistance, v, Vref_actual);
     for i = 1:length(sysfunc_all)
-        w_left(samples,i) = (1./r(1, i) - sysfunc_all{1,i}(2))./sysfunc_all{1,i}(1) ;
-        %w_right(samples,i) = (1./r(2, i) - sysfunc_all{2,i}(2))./sysfunc_all{2,i}(1) ;
+        w_left(sample,i) = (1./r(1, i) - sysfunc_all{1,i}(2))./sysfunc_all{1,i}(1) ;
+        w_right(sample,i) = (1./r(2, i) - sysfunc_all{2,i}(2))./sysfunc_all{2,i}(1) ;
     end
 end
 w_left_avg = mean(w_left, 1);
 w_right_avg = mean(w_right, 1);
 w_profile = [w_right;w_left];
 
+%w_left_avg(w_left_avg<0) = 0;
+%w_right_avg(w_right_avg<0) = 0;
 % 2D-plots
 figure(4);
 clf;
@@ -121,6 +122,7 @@ plot(x_axis_sensor_location, w_right_avg, 'r');
 plot(x_axis_sensor_location, w_right_avg, 'or');
 ylim([-3000,7000])
 drawnow;
+end
 %% Testing spline method for interpolation
 figure(1);
 X = 1:length(w_prof);
@@ -180,7 +182,7 @@ save('data/31mai')
 filename = 'data/31mai-calibration-test';
 xlswrite(filename,profile);
 %% Test sampling over time
-for i=1:samples
+for i=1:sample
     v(i) = arduino.readVoltage('A2');
     v2(i) = arduino.readVoltage('A1');
 end
