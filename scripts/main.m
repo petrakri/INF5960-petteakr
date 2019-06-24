@@ -16,13 +16,13 @@
 %% Setting up the arduino
 arduino = ArduinoSetup('com3','uno');
 %% Load workspace variables
-load('data/21.06_calibration_workspace.mat')
+load('data/24.06_calibration_workspace.mat')
 %% Initialize variables
 weight = @(gram) 0.5072*gram + 900;
 weights2 = [700, 100 + weight(0), 500 + weight(200), 900 + weight(0),...
     weight(4761), 200 + weight(4761), 500 + weight(4761+200), weight(5074.9+4761),...
     500 + weight(5074.9+4761), 700 + weight(5074.9+4761)];
-plot(weights2)
+plot(weights2); hold on; plot(weights2,'o');
 title('Weight intervals for calibration')
 xlabel('Interval #');
 ylabel('Weight [g]');
@@ -73,19 +73,19 @@ disp('Circuit average system functions calculated');
 % r(1,3) r(1,4) r(2,3) r(2,4) = circuit{1,2}
 % r(1,5) r(1,6) r(2,5) r(2,6) = circuit{1,3}
 %while 1
-N = 5;
+N = 20;
 w_left = zeros(N,24);
 w_right = zeros(N,24);
 for sample = 1:N
     v = createProfile(arduino);
     r = arrayfun(@calculateResistance, v, Vref_actual);
     for i = 1:length(w_left)
-        w_left(sample,i) = (1./r(1, i)./sysfunc_all{1,i}(1));
-        w_right(sample,i) = (1./r(2, i)./sysfunc_all{2,i}(1));
+        w_left(sample,i) =  ((1./r(1, i))./sysfunc_all{1,i}(1));
+        w_right(sample,i) = ((1./r(2, i))./sysfunc_all{2,i}(1));
     end
 end
-% - sysfunc_all{1,i}(2))
-% - sysfunc_all{2,i}(2))
+%  - sysfunc_all{1,i}(2)
+%  - sysfunc_all{2,i}(2)
 w_left_avg = mean(w_left, 1);
 w_right_avg = mean(w_right, 1);
 w_profile = [w_right;w_left];
@@ -94,7 +94,7 @@ w_profile = [w_right;w_left];
 %w_right_avg(w_right_avg<0) = 0;
 % 2D-plots
 figure(4);
-clf;
+%clf;
 subplot(2,2,1);
 title('Left channel');
 ylabel('Weight [g]');
@@ -102,7 +102,8 @@ xlabel('Sensor location [mm]');
 hold all;
 plot(x_axis_sensor_location, w_left_avg, 'b'); 
 plot(x_axis_sensor_location, w_left_avg, 'or'); 
-ylim([-3000,7000])
+ylim([-3000,10000]);
+grid on;
 
 subplot(2,2,2);
 title('Right channel');
@@ -111,7 +112,8 @@ xlabel('Sensor location [mm]');
 hold all;
 plot(x_axis_sensor_location, w_right_avg, 'b'); 
 plot(x_axis_sensor_location, w_right_avg, 'or');
-ylim([-3000,7000])
+ylim([-3000,10000]);
+grid on;
 
 subplot(2,2,[3 4]);
 title('Both channels');
@@ -122,16 +124,24 @@ plot(x_axis_sensor_location, w_left_avg, 'b');
 plot(x_axis_sensor_location, w_left_avg, 'ob');
 plot(x_axis_sensor_location, w_right_avg, 'r');
 plot(x_axis_sensor_location, w_right_avg, 'or');
-ylim([-3000,7000])
+ylim([-3000,10000]);
+grid on;
 drawnow;
+total_w = (sum(w_left_avg) + sum(w_right_avg))/1000
 %end
+%% Interpolation test
+figure(1);
+clf;
+x_axis_sensor_location_xq = 0:1/length(x_axis_sensor_location):x_axis_sensor_location(1,end);
+vq1 = interp1(x_axis_sensor_location,w_left_avg,x_axis_sensor_location_xq);
+plot(x_axis_sensor_location_xq,vq1)
 %% Testing spline method for interpolation
 figure(1);
-X = 1:length(w_prof);
+X = 1:length(w_profile);
 XX = 1:1/length(X):length(X);
 % Left channel plot
-YY = spline(X,w_prof(1,:),XX);
-plot(X,w_prof(1,:),'o',XX,YY)
+YY = spline(X,w_profile(2,:),XX);
+plot(X,w_profile(2,:),'o',XX,YY)
 
 title('Ski profile')
 ylabel('weight [g]')
@@ -141,7 +151,7 @@ xlabel('Sensor #')
 %spline(w_prof(2,1:end), 'r');
 
 figure(2);
-profile = padarray(w,[1,1], 'both');
+profile = padarray(w_profile,[1,1], 'both');
 surf(profile);
 colormap(winter)
 %% Removing 200g for polyfit test
