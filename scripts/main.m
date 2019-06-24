@@ -16,7 +16,7 @@
 %% Setting up the arduino
 arduino = ArduinoSetup('com3','uno');
 %% Load workspace variables
-load('data/20.06_calibration_workspace.mat')
+load('data/21.06_calibration_workspace.mat')
 %% Initialize variables
 weight = @(gram) 0.5072*gram + 900;
 weights2 = [700, 100 + weight(0), 500 + weight(200), 900 + weight(0),...
@@ -40,9 +40,9 @@ x_axis_sensor_location = full_array_distance(I_array);
 %% Calibration of all 48 sensors (For best accuracy)
 % Channel 1 is left side, channel 2 is right side
 % i = channel y-axis, j = sensor x-axis 
-for i = 1:1
+for i = 2:2
     % Calibration for channel number i
-    for j = 1:1
+    for j = 11:11
         % Calibrate sensor number j
         clc;
         a = 'Calibration of';
@@ -72,18 +72,20 @@ disp('Circuit average system functions calculated');
 % r(1,1) r(1,2) r(2,1) r(2,2) = circuit{1,1}
 % r(1,3) r(1,4) r(2,3) r(2,4) = circuit{1,2}
 % r(1,5) r(1,6) r(2,5) r(2,6) = circuit{1,3}
-while 1
-N = 2;
+%while 1
+N = 5;
 w_left = zeros(N,24);
 w_right = zeros(N,24);
 for sample = 1:N
     v = createProfile(arduino);
     r = arrayfun(@calculateResistance, v, Vref_actual);
-    for i = 1:length(sysfunc_all)
-        w_left(sample,i) = (1./r(1, i) - sysfunc_all{1,i}(2))./sysfunc_all{1,i}(1) ;
-        w_right(sample,i) = (1./r(2, i) - sysfunc_all{2,i}(2))./sysfunc_all{2,i}(1) ;
+    for i = 1:length(w_left)
+        w_left(sample,i) = (1./r(1, i)./sysfunc_all{1,i}(1));
+        w_right(sample,i) = (1./r(2, i)./sysfunc_all{2,i}(1));
     end
 end
+% - sysfunc_all{1,i}(2))
+% - sysfunc_all{2,i}(2))
 w_left_avg = mean(w_left, 1);
 w_right_avg = mean(w_right, 1);
 w_profile = [w_right;w_left];
@@ -122,7 +124,7 @@ plot(x_axis_sensor_location, w_right_avg, 'r');
 plot(x_axis_sensor_location, w_right_avg, 'or');
 ylim([-3000,7000])
 drawnow;
-end
+%end
 %% Testing spline method for interpolation
 figure(1);
 X = 1:length(w_prof);
