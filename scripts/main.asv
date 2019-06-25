@@ -42,7 +42,7 @@ x_axis_sensor_location = full_array_distance(I_array);
 % i = channel y-axis, j = sensor x-axis 
 for i = 2:2
     % Calibration for channel number i
-    for j = 11:11
+    for j = 13:24
         % Calibrate sensor number j
         clc;
         a = 'Calibration of';
@@ -73,7 +73,7 @@ disp('Circuit average system functions calculated');
 % r(1,3) r(1,4) r(2,3) r(2,4) = circuit{1,2}
 % r(1,5) r(1,6) r(2,5) r(2,6) = circuit{1,3}
 %while 1
-N = 10;
+N = 20;
 w_left = zeros(N,24);
 w_right = zeros(N,24);
 for sample = 1:N
@@ -132,7 +132,9 @@ total_w = (sum(w_left_avg) + sum(w_right_avg))/1000
 %% Interpolation test
 figure(1);
 clf;
-x_axis_sensor_location_xq = 1:1/length(x_axis_sensor_location):length(x_axis_sensor_location);
+x_axis_sensor_location_xq = 0:1/length(x_axis_sensor_location):x_axis_sensor_location(1,end);
+vq1 = interp1(x_axis_sensor_location,w_left_avg,x_axis_sensor_location_xq);
+plot(x_axis_sensor_location_xq,vq1)
 %% Testing spline method for interpolation
 figure(1);
 X = 1:length(w_profile);

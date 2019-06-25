@@ -1,6 +1,6 @@
 figure(1);
 
-
+i = 1; j = 18;
 %for i = 1:2
 %    for j = 3:4
     sys = sysfunc_all{i,j}(1)*weights2 + sysfunc_all{i,j}(2);
@@ -10,7 +10,7 @@ figure(1);
 %end
 
 %%
-i = 2; j = 11;
+
 %%
 N = 6;
 Vout = zeros(1,N);
@@ -24,5 +24,5 @@ r = calculateResistance(mean(Vout), Vref(i, j));
 disp('DONE')
 
 %%
-r_all{i,j}(2) = r;
+r_all{i,j}(1) = r;
 sysfunc_all{i,j} = polyfit(weights2, 1./r_all{i,j}, 1);

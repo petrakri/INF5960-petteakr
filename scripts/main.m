@@ -40,9 +40,9 @@ x_axis_sensor_location = full_array_distance(I_array);
 %% Calibration of all 48 sensors (For best accuracy)
 % Channel 1 is left side, channel 2 is right side
 % i = channel y-axis, j = sensor x-axis 
-for i = 2:2
+for i = 1:1
     % Calibration for channel number i
-    for j = 11:11
+    for j = 23:23
         % Calibrate sensor number j
         clc;
         a = 'Calibration of';
