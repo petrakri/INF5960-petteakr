@@ -24,5 +24,5 @@ r = calculateResistance(mean(Vout), Vref(i, j));
 disp('DONE')
 
 %%
-r_all{i,j}(8) = r;
+r_all{i,j}(5) = r;
 sysfunc_all{i,j} = polyfit(weights2, 1./r_all{i,j}, 1);

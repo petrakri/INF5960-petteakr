@@ -16,7 +16,7 @@
 %% Setting up the arduino
 arduino = ArduinoSetup('com3','uno');
 %% Load workspace variables
-load('data/24.06_calibration_workspace.mat')
+load('data/25.06_calibration_workspace.mat')
 %% Initialize variables
 weight = @(gram) 0.5072*gram + 900;
 weights2 = [700, 100 + weight(0), 500 + weight(200), 900 + weight(0),...
