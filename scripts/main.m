@@ -16,7 +16,7 @@
 %% Setting up the arduino
 arduino = ArduinoSetup('com3','uno');
 %% Load workspace variables
-load('data/25.06_calibration_workspace.mat')
+load('data/26.06_calibration_workspace.mat')
 %% Initialize variables
 weight = @(gram) 0.5072*gram + 900;
 weights2 = [700, 100 + weight(0), 500 + weight(200), 900 + weight(0),...
@@ -34,28 +34,10 @@ Vref_actual = createProfile(arduino);
 % Sensor locations for plotting
 hull_pitch = 25;
 full_array_distance = [0:62]*hull_pitch;
-I_array = logical([1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 ...
-    0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1]);
+I_array = logical([1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 ...
+    0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1]);
 x_axis_sensor_location = full_array_distance(I_array);
-%% Calibration of all 48 sensors (For best accuracy)
-% Channel 1 is left side, channel 2 is right side
-% i = channel y-axis, j = sensor x-axis 
-for i = 1:1
-    % Calibration for channel number i
-    for j = 23:23
-        % Calibrate sensor number j
-        clc;
-        a = 'Calibration of';
-        b = [' ','Channel', ' ', num2str(i), ' '];
-        c = ['Sensor', ' #', num2str(j), ' '];
-        s = [a,b,c];
-        disp(s)
-        disp('___________________________________')
-        [r, sysfunc] = createSysFunc(arduino, weights2, Vref_actual, i, j);
-        sysfunc_all{i,j} = sysfunc;
-        r_all{i,j} = r;
-    end
-end
+
 %% Average sysfunc per circuit
 circuits = cell(1,length(r_all)/2);
 for x = 2:2:length(r_all)
@@ -73,27 +55,32 @@ disp('Circuit average system functions calculated');
 % r(1,3) r(1,4) r(2,3) r(2,4) = circuit{1,2}
 % r(1,5) r(1,6) r(2,5) r(2,6) = circuit{1,3}
 %while 1
-N = 20;
+N = 3;
 w_left = zeros(N,24);
 w_right = zeros(N,24);
+v = zeros(N,24);
+r = zeros(N,24);
 for sample = 1:N
     v = createProfile(arduino);
     r = arrayfun(@calculateResistance, v, Vref_actual);
     for i = 1:length(w_left)
-        w_left(sample,i) =  ((1./r(1, i))./sysfunc_all{1,i}(1));
-        w_right(sample,i) = ((1./r(2, i))./sysfunc_all{2,i}(1));
+        w_left(sample,i) =  ((1./r(1, i) - sysfunc_all{1,i}(2))./sysfunc_all{1,i}(1));
+        w_right(sample,i) = ((1./r(2, i) - sysfunc_all{2,i}(2))./sysfunc_all{2,i}(1));
     end
 end
-%  - sysfunc_all{1,i}(2)
-%  - sysfunc_all{2,i}(2)
+%  
+%  
+%%
+
 w_left_avg = mean(w_left, 1);
 w_right_avg = mean(w_right, 1);
-w_profile = [w_right;w_left];
 
-%w_left_avg(w_left_avg<0) = 0;
-%w_right_avg(w_right_avg<0) = 0;
+w_left_avg(w_left_avg<-200) = 0;
+w_right_avg(w_right_avg<-200) = 0;
+w_profile = [w_right_avg;w_left_avg];
+w_profile_avg = mean(w_profile,1);
 % 2D-plots
-figure(4);
+figure();
 %clf;
 subplot(2,2,1);
 title('Left channel');
@@ -102,7 +89,7 @@ xlabel('Sensor location [mm]');
 hold all;
 plot(x_axis_sensor_location, w_left_avg, 'b'); 
 plot(x_axis_sensor_location, w_left_avg, 'or'); 
-ylim([-3000,10000]);
+ylim([-1000,12000]);
 grid on;
 
 subplot(2,2,2);
@@ -112,7 +99,7 @@ xlabel('Sensor location [mm]');
 hold all;
 plot(x_axis_sensor_location, w_right_avg, 'b'); 
 plot(x_axis_sensor_location, w_right_avg, 'or');
-ylim([-3000,10000]);
+ylim([-1000,12000]);
 grid on;
 
 subplot(2,2,[3 4]);
@@ -121,27 +108,53 @@ ylabel('Weight [g]');
 xlabel('Sensor location [mm]');
 hold all;
 plot(x_axis_sensor_location, w_left_avg, 'b');
-plot(x_axis_sensor_location, w_left_avg, 'ob');
 plot(x_axis_sensor_location, w_right_avg, 'r');
-plot(x_axis_sensor_location, w_right_avg, 'or');
-ylim([-3000,10000]);
+plot(x_axis_sensor_location, w_profile_avg, 'g','LineWidth',2);
+legend('Left channel','Right channel', 'Channel average')
+ylim([-1000,12000]);
 grid on;
-drawnow;
-total_w = (sum(w_left_avg) + sum(w_right_avg))/1000
-%end
-%% Interpolation test
+suptitle('Fischer SPEED MAX Classic Plus 812 #2 [40Kg]');
+%suptitle('Subplot Grid Title','Color','red');
+w_total = (sum(w_left_avg) + sum(w_right_avg))/1000;
+%% Setup data saving
+ski_data_2706 = cell(4,3);
+ski_data_fischer812_1 = cell(5,10);
+ski_data_fischer812_2 = cell(5,10);
+ski_data_fischer902_1 = cell(5,10);
+ski_data_fischer902_2 = cell(5,10);
+for i = 1:4
+    ski_data_2706{i,1} = x_axis_sensor_location;
+    ski_data_2706{i,2} = datetime('today');
+end
+%% Store data
+ski_data_fischer812_1{1,1} = w_profile_avg;
+ski_data_fischer812_1{2,1} = w_profile;
+ski_data_fischer812_1{3,1} = w_left_avg;
+ski_data_fischer812_1{4,1} = w_right_avg;
+ski_data_fischer812_1{5,1} = w_total;
+
+ski_data_2706{1,3} = ski_data_fischer812_1;
+ski_data_2706{2,3} = ski_data_fischer812_2;
+ski_data_2706{3,3} = ski_data_fischer902_1;
+ski_data_2706{4,3} = ski_data_fischer902_2;
+
+%plot(ski_data_2706{1,1}, ski_data_2706{1,3}{1,1});
+
+%% moving average test
 figure(1);
-clf;
-x_axis_sensor_location_xq = 0:1/length(x_axis_sensor_location):x_axis_sensor_location(1,end);
-vq1 = interp1(x_axis_sensor_location,w_left_avg,x_axis_sensor_location_xq);
-plot(x_axis_sensor_location_xq,vq1)
+Z1 = smooth(w_profile(1,:),2);
+Z2 = smooth(w_profile(2,:),2);
+plot(x_axis_sensor_location,Z1); hold on; plot(x_axis_sensor_location, Z2)
 %% Testing spline method for interpolation
-figure(1);
-X = 1:length(w_profile);
-XX = 1:1/length(X):length(X);
-% Left channel plot
-YY = spline(X,w_profile(2,:),XX);
-plot(X,w_profile(2,:),'o',XX,YY)
+figure(7);
+prof = w_profile(2,:);
+X = 1:length(prof);
+XX = 1:1/101:X(end);
+
+YY = spline(x_axis_sensor_location,prof);
+
+
+plot(x_axis_sensor_location,prof,'o');
 
 title('Ski profile')
 ylabel('weight [g]')
@@ -149,7 +162,7 @@ xlabel('Sensor #')
 %stem(w_prof(1,1:end),'b'); hold on;
 %stem(w_prof(2,1:end), 'g');
 %spline(w_prof(2,1:end), 'r');
-
+%%
 figure(2);
 profile = padarray(w_profile,[1,1], 'both');
 surf(profile);
