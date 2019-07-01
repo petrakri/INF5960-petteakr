@@ -1,6 +1,6 @@
 %%%---------------------------------------------------------------------%%%
 %%% main.m                                                              %%%
-%%% Version 1.4   19.06.2019                                            %%%
+%%% Version 2.0   27.06.2019                                            %%%
 %%% @Petter André Kristiansen                                           %%%
 %%% Main function for operating the measurement process                 %%%
 %%% Args:                                                               %%%
@@ -16,7 +16,7 @@
 %% Setting up the arduino
 arduino = ArduinoSetup('com3','uno');
 %% Load workspace variables
-load('data/26.06_calibration_workspace.mat')
+load('data/27.06_measurement_workspace.mat')
 %% Initialize variables
 weight = @(gram) 0.5072*gram + 900;
 weights2 = [700, 100 + weight(0), 500 + weight(200), 900 + weight(0),...
@@ -37,7 +37,6 @@ full_array_distance = [0:62]*hull_pitch;
 I_array = logical([1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 ...
     0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1]);
 x_axis_sensor_location = full_array_distance(I_array);
-
 %% Average sysfunc per circuit
 circuits = cell(1,length(r_all)/2);
 for x = 2:2:length(r_all)
@@ -54,18 +53,37 @@ disp('Circuit average system functions calculated');
 % r(1,1) r(1,2) r(2,1) r(2,2) = circuit{1,1}
 % r(1,3) r(1,4) r(2,3) r(2,4) = circuit{1,2}
 % r(1,5) r(1,6) r(2,5) r(2,6) = circuit{1,3}
-%while 1
-N = 3;
-w_left = zeros(N,24);
-w_right = zeros(N,24);
-v = zeros(N,24);
-r = zeros(N,24);
-for sample = 1:N
-    v = createProfile(arduino);
-    r = arrayfun(@calculateResistance, v, Vref_actual);
-    for i = 1:length(w_left)
-        w_left(sample,i) =  ((1./r(1, i) - sysfunc_all{1,i}(2))./sysfunc_all{1,i}(1));
-        w_right(sample,i) = ((1./r(2, i) - sysfunc_all{2,i}(2))./sysfunc_all{2,i}(1));
+skis = ['812_1', '812_2', '902_1', '902_2'];
+for measurement = 1:10
+    for ski = 1:4
+        s = skis(ski);
+        disp(s)
+        N = 2;
+        w_left = zeros(N,24);
+        w_right = zeros(N,24);
+        v = zeros(N,24);
+        r = zeros(N,24);
+        for sample = 1:N
+            v = createProfile(arduino);
+            r = arrayfun(@calculateResistance, v, Vref_actual);
+            for i = 1:length(w_left)
+                w_left(sample,i) =  ((1./r(1, i) - sysfunc_all{1,i}(2))./sysfunc_all{1,i}(1));
+                w_right(sample,i) = ((1./r(2, i) - sysfunc_all{2,i}(2))./sysfunc_all{2,i}(1));
+            end
+        end
+        w_left_avg = mean(w_left, 1);
+        w_right_avg = mean(w_right, 1);
+        w_left_avg(w_left_avg<-200) = 0;
+        w_right_avg(w_right_avg<-200) = 0;
+        w_profile = [w_right_avg;w_left_avg];
+        w_profile_avg = mean(w_profile,1);
+        if ski == 1
+            ski_data_fischer812_1{1,1} = w_profile_avg;
+            ski_data_fischer812_1{2,1} = w_profile;
+            ski_data_fischer812_1{3,1} = w_left_avg;
+            ski_data_fischer812_1{4,1} = w_right_avg;
+            ski_data_fischer812_1{5,1} = w_total;
+        end
     end
 end
 %  
@@ -117,14 +135,14 @@ suptitle('Fischer SPEED MAX Classic Plus 812 #2 [40Kg]');
 %suptitle('Subplot Grid Title','Color','red');
 w_total = (sum(w_left_avg) + sum(w_right_avg))/1000;
 %% Setup data saving
-ski_data_2706 = cell(4,3);
+ski_data_0107 = cell(4,3);
 ski_data_fischer812_1 = cell(5,10);
 ski_data_fischer812_2 = cell(5,10);
 ski_data_fischer902_1 = cell(5,10);
 ski_data_fischer902_2 = cell(5,10);
 for i = 1:4
-    ski_data_2706{i,1} = x_axis_sensor_location;
-    ski_data_2706{i,2} = datetime('today');
+    ski_data_0107{i,1} = x_axis_sensor_location;
+    ski_data_0107{i,2} = datetime('today');
 end
 %% Store data
 ski_data_fischer812_1{1,1} = w_profile_avg;
@@ -133,12 +151,13 @@ ski_data_fischer812_1{3,1} = w_left_avg;
 ski_data_fischer812_1{4,1} = w_right_avg;
 ski_data_fischer812_1{5,1} = w_total;
 
-ski_data_2706{1,3} = ski_data_fischer812_1;
-ski_data_2706{2,3} = ski_data_fischer812_2;
-ski_data_2706{3,3} = ski_data_fischer902_1;
-ski_data_2706{4,3} = ski_data_fischer902_2;
+%%
+ski_data_0107{1,3} = ski_data_fischer812_1;
+ski_data_0107{2,3} = ski_data_fischer812_2;
+ski_data_0107{3,3} = ski_data_fischer902_1;
+ski_data_0107{4,3} = ski_data_fischer902_2;
 
-plot(ski_data_2706{1,1}, )
+%plot(ski_data_2706{1,1}, ski_data_2706{1,3}{1,1});
 
 %% moving average test
 figure(1);
