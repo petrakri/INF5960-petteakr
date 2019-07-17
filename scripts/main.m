@@ -35,7 +35,7 @@ Vref_actual = createProfile(arduino);
 hull_pitch = 25;
 full_array_distance = [0:62]*hull_pitch;
 I_array = logical([1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 ...
-    0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1]);
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 1 0 1 0 1 0 1 0 1 0 1]);
 x_axis_sensor_location = full_array_distance(I_array);
 %% Average sysfunc per circuit
 circuits = cell(1,length(r_all)/2);
@@ -65,6 +65,8 @@ end
 % r(1,5) r(1,6) r(2,5) r(2,6) = circuit{1,3}
 skis = ["812_1", "812_2", "902_1", "902_2"];
 for measurement = 1:10
+    clc;
+    disp(["Round: ", num2str(measurement)])
     for ski = 1:4
         s = skis(ski);
         disp(s)
@@ -90,6 +92,7 @@ for measurement = 1:10
         w_right_avg(w_right_avg<-200) = 0;
         w_profile = [w_right_avg;w_left_avg];
         w_profile_avg = mean(w_profile,1);
+        w_total = (sum(w_left_avg) + sum(w_right_avg))/1000;
         
         if ski == 1
             ski_data_fischer812_1{1,measurement} = w_profile_avg;
@@ -116,6 +119,7 @@ for measurement = 1:10
             ski_data_fischer902_2{4,measurement} = w_right_avg;
             ski_data_fischer902_2{5,measurement} = w_total;        
         end
+        w_total
     end
 end
 ski_data_0107{1,3} = ski_data_fischer812_1;
@@ -172,8 +176,11 @@ suptitle('Fischer SPEED MAX Classic Plus 812 #2 [40Kg]');
 w_total = (sum(w_left_avg) + sum(w_right_avg))/1000;
 
 %% plot data
-
-%plot(ski_data_2706{1,1}, ski_data_2706{1,3}{1,1});
+figure(10);
+for i = 1:10
+    plot(ski_data_0107{1,1}, ski_data_0107{3,3}{1,i},'o'); hold all;
+    plot(ski_data_0107{1,1}, ski_data_0107{3,3}{1,i});
+end
 
 %% moving average test
 figure(1);
